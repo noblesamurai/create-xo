@@ -1,15 +1,12 @@
-'use strict';
-const path = require('path');
-const minimist = require('minimist');
-const arrify = require('arrify');
 const argv = require('the-argv');
+const arrify = require('arrify');
+const execa = require('execa');
+const hasYarn = require('has-yarn');
+const minimist = require('minimist');
+const path = require('path');
 const pathExists = require('path-exists');
 const readPkgUp = require('read-pkg-up');
 const writePkg = require('write-pkg');
-const execa = require('execa');
-const hasYarn = require('has-yarn');
-
-const DEFAULT_TEST_SCRIPT = 'echo "Error: no test specified" && exit 1';
 
 const PLURAL_OPTIONS = [
   'env',
@@ -28,19 +25,6 @@ const CONFIG_FILES = [
   '.jscs.json',
   '.jscs.yaml'
 ];
-
-const buildTestScript = test => {
-  if (test && test !== DEFAULT_TEST_SCRIPT) {
-    // Don't add if it's already there
-    if (!/^xo( |$)/.test(test)) {
-      return `xo && ${test}`;
-    }
-
-    return test;
-  }
-
-  return 'xo';
-};
 
 const warnConfigFile = packageCwd => {
   const files = CONFIG_FILES.filter(file => pathExists.sync(path.join(packageCwd, file)));
@@ -62,7 +46,7 @@ module.exports = async (options = {}) => {
   const packageCwd = path.dirname(packagePath);
 
   packageJson.scripts = packageJson.scripts || {};
-  packageJson.scripts.test = buildTestScript(packageJson.scripts.test);
+  packageJson.scripts.pretest = 'xo';
 
   const cli = minimist(options.args || argv());
   delete cli._;
@@ -74,9 +58,7 @@ module.exports = async (options = {}) => {
     }
   }
 
-  if (Object.keys(cli).length > 0) {
-    packageJson.xo = { env: 'mocha', extends: 'semistandard', ...packageJson.xo, ...cli };
-  }
+  packageJson.xo = { env: 'mocha', extends: 'semistandard', ...packageJson.xo, ...cli };
 
   writePkg.sync(packagePath, packageJson);
 
