@@ -50,7 +50,7 @@
 		"temp-write": "^4.0.0",
 		"xo": "^0.25.3"
 	},
-        "xo": {
-          "extends": "semistandard"
-        }
+	"xo": {
+		"extends": "semistandard"
+	}
 }
