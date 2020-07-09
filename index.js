@@ -8,11 +8,7 @@ const pathExists = require('path-exists');
 const readPkgUp = require('read-pkg-up');
 const writePkg = require('write-pkg');
 
-const PLURAL_OPTIONS = [
-  'env',
-  'global',
-  'ignore'
-];
+const PLURAL_OPTIONS = ['env', 'global', 'ignore'];
 
 const CONFIG_FILES = [
   '.eslintrc.js',
@@ -27,22 +23,28 @@ const CONFIG_FILES = [
 ];
 
 const warnConfigFile = packageCwd => {
-  const files = CONFIG_FILES.filter(file => pathExists.sync(path.join(packageCwd, file)));
+  const files = CONFIG_FILES.filter(file =>
+    pathExists.sync(path.join(packageCwd, file))
+  );
 
   if (files.length === 0) {
     return;
   }
 
-  console.log(`${files.join(' & ')} can probably be deleted now that you're using XO.`);
+  console.log(
+    `${files.join(' & ')} can probably be deleted now that you're using XO.`
+  );
 };
 
 module.exports = async (options = {}) => {
-  const packageResult = readPkgUp.sync({
-    cwd: options.cwd,
-    normalize: false
-  }) || {};
+  const packageResult =
+    readPkgUp.sync({
+      cwd: options.cwd,
+      normalize: false
+    }) || {};
   const packageJson = packageResult.package || {};
-  const packagePath = packageResult.path || path.resolve(options.cwd || '', 'package.json');
+  const packagePath =
+    packageResult.path || path.resolve(options.cwd || '', 'package.json');
   const packageCwd = path.dirname(packagePath);
 
   packageJson.scripts = packageJson.scripts || {};
@@ -58,7 +60,12 @@ module.exports = async (options = {}) => {
     }
   }
 
-  packageJson.xo = { env: 'mocha', extends: 'semistandard', ...packageJson.xo, ...cli };
+  packageJson.xo = {
+    env: 'mocha',
+    extends: 'semistandard',
+    ...packageJson.xo,
+    ...cli
+  };
 
   writePkg.sync(packagePath, packageJson);
 
@@ -73,11 +80,17 @@ module.exports = async (options = {}) => {
 
   if (hasYarn(packageCwd)) {
     try {
-      await execa('yarn', ['add', '--dev', '--ignore-workspace-root-check', 'xo'], { cwd: packageCwd });
+      await execa(
+        'yarn',
+        ['add', '--dev', '--ignore-workspace-root-check', 'xo'],
+        { cwd: packageCwd }
+      );
       post();
     } catch (error) {
       if (error.code === 'ENOENT') {
-        console.error('This project uses Yarn but you don\'t seem to have Yarn installed.\nRun `npm install --global yarn` to install it.');
+        console.error(
+          "This project uses Yarn but you don't seem to have Yarn installed.\nRun `npm install --global yarn` to install it."
+        );
         return;
       }
 
@@ -88,7 +101,18 @@ module.exports = async (options = {}) => {
   }
 
   await execa('npm', ['uninstall', 'semistandard'], { cwd: packageCwd });
-  await execa('npm', ['install', '--save-dev', 'eslint-config-semistandard', 'eslint-config-standard', 'eslint-plugin-standard'], { cwd: packageCwd });
+  await execa(
+    'npm',
+    [
+      'install',
+      '--save-dev',
+      'eslint-config-semistandard',
+      'eslint-config-standard',
+      'eslint-plugin-node',
+      'eslint-plugin-standard'
+    ],
+    { cwd: packageCwd }
+  );
   await execa('npm', ['install', '--save-dev', 'xo'], { cwd: packageCwd });
   post();
 };
