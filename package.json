@@ -49,5 +49,8 @@
 		"eslint-plugin-standard": "^4.0.1",
 		"temp-write": "^4.0.0",
 		"xo": "^0.25.3"
-	}
+	},
+        "xo": {
+          "extends": "semistandard"
+        }
 }

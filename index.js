@@ -106,7 +106,7 @@ module.exports = async (options = {}) => {
   }
 
   await execa('npm', ['uninstall', 'semistandard'], { cwd: packageCwd });
-  await execa('npm', ['install', '--save-dev', 'eslint-config-semistandard, eslint-config-standard, eslint-plugin-standard'], { cwd: packageCwd });
+  await execa('npm', ['install', '--save-dev', 'eslint-config-semistandard', 'eslint-config-standard', 'eslint-plugin-standard'], { cwd: packageCwd });
   await execa('npm', ['install', '--save-dev', 'xo'], { cwd: packageCwd });
   post();
 };

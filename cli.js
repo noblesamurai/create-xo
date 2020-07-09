@@ -3,5 +3,5 @@
 const createXo = require('.');
 
 createXo({
-	args: process.argv.slice(2)
+  args: process.argv.slice(2)
 });
