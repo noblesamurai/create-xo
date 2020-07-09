@@ -75,7 +75,7 @@ module.exports = async (options = {}) => {
 	}
 
 	if (Object.keys(cli).length > 0) {
-		packageJson.xo = {...packageJson.xo, ...cli};
+		packageJson.xo = { env: 'mocha', extends: 'semistandard', ...packageJson.xo, ...cli };
 	}
 
 	writePkg.sync(packagePath, packageJson);
@@ -105,6 +105,8 @@ module.exports = async (options = {}) => {
 		return;
 	}
 
+	await execa('npm', ['uninstall', 'semistandard'], {cwd: packageCwd});
+	await execa('npm', ['install', '--save-dev', 'eslint-config-semistandard, eslint-config-standard, eslint-plugin-standard'], {cwd: packageCwd});
 	await execa('npm', ['install', '--save-dev', 'xo'], {cwd: packageCwd});
 	post();
 };
