@@ -6,15 +6,8 @@
 ## CLI
 
 ```
-$ npm init xo [options]
+$ npm init @noblesam/xo [options]
 ```
-
-Example:
-
-```
-$ npm init xo --space --no-semicolon
-```
-
 
 ## API
 
